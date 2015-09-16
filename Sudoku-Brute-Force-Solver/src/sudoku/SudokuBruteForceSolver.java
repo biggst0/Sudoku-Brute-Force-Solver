@@ -20,7 +20,7 @@ public class SudokuBruteForceSolver
 	public boolean checkBoxes() 
 	{
 		int[][] currentTestArray = testArray;
-		boolean[] cellCompareArray = new boolean[magicNum];
+		boolean[] cellCompareArray = new boolean[magicNum + 1];
 		int blockCount = width * height;
 		int compareNum = 0;
 		int x = 0;

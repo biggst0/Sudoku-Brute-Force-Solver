@@ -8,6 +8,9 @@ public class SudokuBruteForceSolver
 	private int height;
 	private int magicNum;
 	private int[][] testArray;
+	private int cols;
+	private int rows;
+	private int numCells;
 	
 	public SudokuBruteForceSolver()
 	{
@@ -15,7 +18,49 @@ public class SudokuBruteForceSolver
 		
 	}
 	
-	
+	public boolean checkRows(){
+		int currentRow = 0;
+		int currentCol = 0;
+		int currentCellVal = 0;
+		for (int cellCount = 0; cellCount < numCells; cellCount++){
+			currentCellVal = testArray[currentRow][currentCol];
+			System.out.println("Checked row "+currentRow + " column " + currentCol);
+			for (int checkCol = currentCol + 1; checkCol < cols; checkCol++){
+				if  (testArray[currentRow][checkCol] == currentCellVal)
+					return false;
+			
+			}
+			if (currentCol < cols - 1) 
+				currentCol++;
+			else{
+				currentCol = 0;
+				currentRow++;
+			}
+		}
+		return true;	
+	}
+	//the colCheck test
+	public boolean checkCols(){
+		int currentRow = 0;
+		int currentCol = 0;
+		int currentCellVal = 0;
+		for (int cellCount = 0; cellCount < numCells; cellCount++){
+			currentCellVal = testArray[currentRow][currentCol];
+			System.out.println("Checked row "+currentRow + " column " + currentCol);
+			for (int checkRow = currentRow + 1; checkRow < rows; checkRow++){
+				if  (testArray[checkRow][currentCol] == currentCellVal)
+					return false;
+			
+			}
+			if (currentRow < rows - 1) 
+				currentRow++;
+			else{
+				currentRow = 0;
+				currentCol++;
+			}
+		}
+		return true;
+	}
 	
 	public boolean checkBoxes() 
 	{

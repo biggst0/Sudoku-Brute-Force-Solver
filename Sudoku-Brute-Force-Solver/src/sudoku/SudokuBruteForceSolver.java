@@ -8,9 +8,54 @@ public class SudokuBruteForceSolver
 	private int height;
 	private int magicNum;
 	private int[][] testArray;
+	private int[][] refArray;
+	private int[] sequence;
+	private int sequenceLength;
 	private int cols;
 	private int rows;
 	private int numCells;
+	
+	//initializes sequence[] and sets all values to 1.
+	public void initSequence(){
+		sequence = new int[sequenceLength];
+		for(int i=0; i < sequenceLength; i++)
+			sequence[i] = 1;
+	}
+	
+	//increments sequence[] from right to left.
+	//returns true as long as there is another possible sequence value.
+	public boolean incrementSequence(){
+		int carry = 1;
+		int position = sequenceLength - 1;
+		while (carry != 0 && position >= 0){
+			if (sequence[position] == magicNumber){
+				sequence[position] = 1;
+				carry = 1;			
+				position--;
+			}
+			else{
+				sequence[position]++;
+				carry = 0;
+			}
+		}
+		if (position < 0){
+			return false;
+		}
+		return true;
+	}
+	
+	//loads sequence[] values into testArray[][] using refArray[][] as a reference.
+	public void loadSequence(){
+		int sequencePos = 0;
+		for (int rowCount = 0; rowCount < rows; rowCount++){
+			for (int colCount = 0; colCount < cols; colCount++){
+				if(refArray[rowCount][colCount] == 0){
+					testArray[rowCount][colCount] = sequence[sequencePos];
+					sequencePos++;
+				}
+			}
+		}
+	}
 	
 	public SudokuBruteForceSolver()
 	{
@@ -18,6 +63,8 @@ public class SudokuBruteForceSolver
 		
 	}
 	
+	//checks each cell for a matching value in that cell's row.
+	//returns true if a match is found and false if a match is not.
 	public boolean checkRows(){
 		int currentRow = 0;
 		int currentCol = 0;
@@ -39,7 +86,9 @@ public class SudokuBruteForceSolver
 		}
 		return true;	
 	}
-	//the colCheck test
+	
+	//checks each cell for a matching value in that cell's column.
+	//returns true if a match is found and false if no match is found.
 	public boolean checkCols(){
 		int currentRow = 0;
 		int currentCol = 0;

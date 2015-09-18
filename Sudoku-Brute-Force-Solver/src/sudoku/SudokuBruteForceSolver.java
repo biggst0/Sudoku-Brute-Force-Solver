@@ -15,6 +15,32 @@ public class SudokuBruteForceSolver
 	private int rows;
 	private int numCells;
 	
+	public SudokuBruteForceSolver()
+	{
+		
+	}
+	
+	public void solverControl()
+	{
+		boolean solved = false;
+		int i = sequenceLength^2;
+		while(i > 0 || solved == true)
+		{	
+			if(checkRows() || checkCols() || checkBoxes() == false)
+			{
+				incrementSequence();
+				loadSequence();
+				i--;
+				
+			}
+			else if(checkRows() && checkCols() && checkBoxes() == true)
+			{
+				solved = true;	
+			}
+		}
+		printInformation(solved);
+	}
+	
 	//initializes sequence[] and sets all values to 1.
 	public void initSequence(){
 		sequence = new int[sequenceLength];
@@ -28,7 +54,7 @@ public class SudokuBruteForceSolver
 		int carry = 1;
 		int position = sequenceLength - 1;
 		while (carry != 0 && position >= 0){
-			if (sequence[position] == magicNumber){
+			if (sequence[position] == magicNum){
 				sequence[position] = 1;
 				carry = 1;			
 				position--;
@@ -55,12 +81,6 @@ public class SudokuBruteForceSolver
 				}
 			}
 		}
-	}
-	
-	public SudokuBruteForceSolver()
-	{
-	
-		
 	}
 	
 	//checks each cell for a matching value in that cell's row.
@@ -113,24 +133,25 @@ public class SudokuBruteForceSolver
 	
 	public boolean checkBoxes() 
 	{
-		int[][] currentTestArray = testArray;
 		boolean[] cellCompareArray = new boolean[magicNum + 1];
-		int blockCount = width * height;
 		int compareNum = 0;
+		int currentRow = 0;
+		int currentColumn = 0;
 		int x = 0;
 		int y = 0;
 		int i = 0;
-		while(i < blockCount)
+		while(i < magicNum)
 		{ 
 			Arrays.fill(cellCompareArray, false);
 		    int j = (x / width) * width;
 		    int k = (y / height) * height;
 		 
-		    for(int currentRow = j; currentRow < j + width; currentRow++) 
+		    for(currentRow = j; currentRow < j + width; currentRow++) 
 		    {
-		        for(int currentColumn = k; currentColumn < k + 3; currentColumn++) 
+		        for(currentColumn = k; currentColumn < k + height; currentColumn++) 
 		        {
-		        	compareNum = currentTestArray[j][k];
+		        	System.out.println(testArray[currentColumn][currentRow]); //// For testing
+		        	compareNum = testArray[currentColumn][currentRow];
 					if(cellCompareArray[compareNum] == false)
 					{
 						cellCompareArray[compareNum] = true;
@@ -142,7 +163,7 @@ public class SudokuBruteForceSolver
 		        }
 		    }
 		    
-		    if(x + 1 < magicNum)
+		    if(x + width < magicNum)
 		    {
 		    	x = x + width;
 		    }
@@ -157,9 +178,15 @@ public class SudokuBruteForceSolver
 	    return true;
 	}
 	
-	public void printInformation()
+	public void printInformation(boolean solved)
 	{
-		
+		if(solved == false)
+		{
+			System.out.println(" Sudoku can not be solved");
+		}
+		else
+		{
+			System.out.println(solved + " test print");
+		}
 		
 	}
-}

@@ -1,6 +1,9 @@
 package sudoku;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class SudokuBruteForceSolver 
 {
@@ -11,128 +14,179 @@ public class SudokuBruteForceSolver
 	private int[][] refArray;
 	private int[] sequence;
 	private int sequenceLength;
-	private int cols;
-	private int rows;
 	private int numCells;
-	
-	public SudokuBruteForceSolver()
+
+	/**
+	 * This method takes a text file and scans it. It takes the width and length
+	 * of the sudoku and creates a 2 dimension array. Then it loads the integers
+	 * into the array.
+	 * 
+	 * @param String
+	 *            of the location of the text file
+	 * @return
+	 * @return
+	 * @throws IOException
+	 *             If the text file cannot be found
+	 */
+	public void readFile(String fileName) throws FileNotFoundException {
+
+		Scanner sc = new Scanner(new File(fileName)); // starts the scanner
+
+		if ((!sc.hasNextInt()))// if the next input is not an int
+		{
+			sc.next().charAt(0); // remove the first character at the first
+									// position
+			width = sc.nextInt();// Assigns next int to width
+			height = sc.nextInt();// Assigns next int to height
+		} 
+		else {
+			width = sc.nextInt();// assigns the next number to width
+			height = sc.nextInt();// assign next number to height
+		}
+		magicNum = width * height;// assign width * height to the magicNum
+		testArray = new int[magicNum][magicNum];// Declare a 2Dimension array
+		refArray = new int[magicNum][magicNum];// Declare a 2Dimension array
+
+		int j = 0;// declare and initialize int j to 0
+		int i = 0;// declare and initialize int i to 0
+
+		int blankCounter = 0;
+		while (sc.hasNextInt()) {// while scanner still has a next int
+			int k = sc.nextInt();// assigned next int to variable k
+
+			testArray[i][j] = k;// insert variable k in the test array
+			refArray[i][j] = k;// insert variable k in the ref array
+			if (k == 0)// if variable k == 0
+				blankCounter++;// increase counter by 1
+			if (j == magicNum - 1)// if magicNum - 1 is equal to j
+			{
+				j = 0;// set j equal to j equal to zero
+				i++;// increase i by 1
+			} else// else
+			{
+				j++;// increase j by 1.
+			}
+
+		}
+		sequenceLength = blankCounter;
+		sc.close();// close scanner.
+
+	}
+
+	public void solverControl() throws FileNotFoundException 
 	{
 		
-	}
-	
-	public void solverControl()
-	{
+		readFile("C:/Users/Travis/git/Sudoku-Brute-Force-Solver/Sudoku-Brute-Force-Solver/src/soduku.txt");
+		
+		initSequence();
 		boolean solved = false;
-		int i = sequenceLength^2;
-		while(i > 0 || solved == true)
-		{	
-			if(checkRows() || checkCols() || checkBoxes() == false)
+		int i = 0;
+		while (solved != true && i < (Math.pow(magicNum, sequenceLength))) 
+		{
+			loadSequence();
+			if (checkRows() == true && checkCols() == true && checkBoxes() == true) 
 			{
-				incrementSequence();
-				loadSequence();
-				i--;
-				
+				solved = true;
 			}
-			else if(checkRows() && checkCols() && checkBoxes() == true)
-			{
-				solved = true;	
-			}
+			incrementSequence();
+			i++;
 		}
 		printInformation(solved);
 	}
-	
-	//initializes sequence[] and sets all values to 1.
-	public void initSequence(){
+
+	// initializes sequence[] and sets all values to 1.
+	public void initSequence() {
 		sequence = new int[sequenceLength];
-		for(int i=0; i < sequenceLength; i++)
+		for (int i = 0; i < sequenceLength; i++)
 			sequence[i] = 1;
 	}
-	
-	//increments sequence[] from right to left.
-	//returns true as long as there is another possible sequence value.
-	public boolean incrementSequence(){
+
+	// increments sequence[] from right to left.
+	// returns true as long as there is another possible sequence value.
+	public boolean incrementSequence() {
 		int carry = 1;
 		int position = sequenceLength - 1;
-		while (carry != 0 && position >= 0){
-			if (sequence[position] == magicNum){
+		while (carry != 0 && position >= 0) {
+			if (sequence[position] == magicNum) {
 				sequence[position] = 1;
-				carry = 1;			
+				carry = 1;
 				position--;
-			}
-			else{
+			} else {
 				sequence[position]++;
 				carry = 0;
 			}
 		}
-		if (position < 0){
+		if (position < 0) {
 			return false;
 		}
 		return true;
 	}
-	
-	//loads sequence[] values into testArray[][] using refArray[][] as a reference.
-	public void loadSequence(){
+
+	// loads sequence[] values into testArray[][] using refArray[][] as a
+	// reference.
+	public void loadSequence() {
 		int sequencePos = 0;
-		for (int rowCount = 0; rowCount < rows; rowCount++){
-			for (int colCount = 0; colCount < cols; colCount++){
-				if(refArray[rowCount][colCount] == 0){
+		for (int rowCount = 0; rowCount < magicNum; rowCount++) {
+			for (int colCount = 0; colCount < magicNum; colCount++) {
+				if (refArray[rowCount][colCount] == 0) {
 					testArray[rowCount][colCount] = sequence[sequencePos];
 					sequencePos++;
 				}
 			}
 		}
 	}
-	
-	//checks each cell for a matching value in that cell's row.
-	//returns true if a match is found and false if a match is not.
-	public boolean checkRows(){
+
+	// checks each cell for a matching value in that cell's row.
+	// returns true if a match is found and false if a match is not.
+	public boolean checkRows() {
 		int currentRow = 0;
 		int currentCol = 0;
 		int currentCellVal = 0;
-		for (int cellCount = 0; cellCount < numCells; cellCount++){
+		for (int cellCount = 0; cellCount < numCells; cellCount++) {
 			currentCellVal = testArray[currentRow][currentCol];
-			System.out.println("Checked row "+currentRow + " column " + currentCol);
-			for (int checkCol = currentCol + 1; checkCol < cols; checkCol++){
-				if  (testArray[currentRow][checkCol] == currentCellVal)
+			System.out.println("Checked row " + currentRow + " column "
+					+ currentCol);
+			for (int checkCol = currentCol + 1; checkCol < magicNum; checkCol++) {
+				if (testArray[currentRow][checkCol] == currentCellVal)
 					return false;
-			
+
 			}
-			if (currentCol < cols - 1) 
+			if (currentCol < magicNum - 1)
 				currentCol++;
-			else{
+			else {
 				currentCol = 0;
 				currentRow++;
 			}
 		}
-		return true;	
+		return true;
 	}
-	
-	//checks each cell for a matching value in that cell's column.
-	//returns true if a match is found and false if no match is found.
-	public boolean checkCols(){
+
+	// checks each cell for a matching value in that cell's column.
+	// returns true if a match is found and false if no match is found.
+	public boolean checkCols() {
 		int currentRow = 0;
 		int currentCol = 0;
 		int currentCellVal = 0;
-		for (int cellCount = 0; cellCount < numCells; cellCount++){
+		for (int cellCount = 0; cellCount < numCells; cellCount++) {
 			currentCellVal = testArray[currentRow][currentCol];
-			System.out.println("Checked row "+currentRow + " column " + currentCol);
-			for (int checkRow = currentRow + 1; checkRow < rows; checkRow++){
-				if  (testArray[checkRow][currentCol] == currentCellVal)
+			System.out.println("Checked row " + currentRow + " column "
+					+ currentCol);
+			for (int checkRow = currentRow + 1; checkRow < magicNum; checkRow++) {
+				if (testArray[checkRow][currentCol] == currentCellVal)
 					return false;
-			
+
 			}
-			if (currentRow < rows - 1) 
+			if (currentRow < magicNum - 1)
 				currentRow++;
-			else{
+			else {
 				currentRow = 0;
 				currentCol++;
 			}
 		}
 		return true;
 	}
-	
-	public boolean checkBoxes() 
-	{
+
+	public boolean checkBoxes() {
 		boolean[] cellCompareArray = new boolean[magicNum + 1];
 		int compareNum = 0;
 		int currentRow = 0;
@@ -140,53 +194,77 @@ public class SudokuBruteForceSolver
 		int x = 0;
 		int y = 0;
 		int i = 0;
-		while(i < magicNum)
-		{ 
+		while (i < magicNum) {
 			Arrays.fill(cellCompareArray, false);
-		    int j = (x / width) * width;
-		    int k = (y / height) * height;
-		 
-		    for(currentRow = j; currentRow < j + width; currentRow++) 
-		    {
-		        for(currentColumn = k; currentColumn < k + height; currentColumn++) 
-		        {
-		        	System.out.println(testArray[currentColumn][currentRow]); //// For testing
-		        	compareNum = testArray[currentColumn][currentRow];
-					if(cellCompareArray[compareNum] == false)
-					{
+			int j = (x / width) * width;
+			int k = (y / height) * height;
+
+			for (currentRow = j; currentRow < j + width; currentRow++) {
+				for (currentColumn = k; currentColumn < k + height; currentColumn++) {
+					compareNum = testArray[currentColumn][currentRow];
+					if (cellCompareArray[compareNum] == false) {
 						cellCompareArray[compareNum] = true;
-					}
-					else
-					{
+					} else {
 						return false;
 					}
-		        }
-		    }
-		    
-		    if(x + width < magicNum)
-		    {
-		    	x = x + width;
-		    }
-		    else
-		    {
-		    	x = 0;
-		    	y = y + height;
-		    }
-		    
-		    i++;
+				}
+			}
+
+			if (x + width < magicNum) {
+				x = x + width;
+			} else {
+				x = 0;
+				y = y + height;
+			}
+
+			i++;
 		}
-	    return true;
+		return true;
 	}
-	
-	public void printInformation(boolean solved)
-	{
-		if(solved == false)
-		{
-			System.out.println(" Sudoku can not be solved");
+
+	public void printInformation(boolean solved) {
+		int[][] finalArray;
+		if (solved == false) {
+			System.out.println("Current Sudoku can not be solved.");
+			finalArray = refArray;
+		} else {
+			System.out.println("Current Sudoku was solved!");
+			finalArray = testArray;
 		}
-		else
-		{
-			System.out.println(solved + " test print");
+
+		int i = 0;
+		for (int rowCount = 0; rowCount < magicNum; rowCount++) {
+			if ((i % height) == 0) 
+			{
+				printOutline();
+			}
+			i++;
+			int k = 0;
+			for (int colCount = 0; colCount < magicNum; colCount++) {
+				if ((k % width) == 0) {
+					System.out.print("| ");
+				}
+				System.out.print(finalArray[rowCount][colCount] + " ");
+				k++;
+			}
+			System.out.print("| ");
+			System.out.println();
 		}
-		
+		printOutline();
 	}
+
+	public void printOutline() {
+		int i = 0;
+		int j = 0;
+		while (j < height) {
+			System.out.print("+ ");
+			while (i < width) {
+				System.out.print("- ");
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		System.out.println("+");
+	}
+}

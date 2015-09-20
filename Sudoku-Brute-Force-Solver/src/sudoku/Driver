@@ -1,0 +1,14 @@
+package sudoku;
+
+import java.io.FileNotFoundException;
+
+public class Driver 
+{
+	public static void main(String[] args) throws FileNotFoundException 
+	{
+		
+		SudokuBruteForceSolver SBFS = new SudokuBruteForceSolver();
+		SBFS.solverControl();
+	
+	}
+}

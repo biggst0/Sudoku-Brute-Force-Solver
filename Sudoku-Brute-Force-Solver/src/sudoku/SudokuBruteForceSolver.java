@@ -36,13 +36,10 @@ public class SudokuBruteForceSolver
 		{
 			sc.next().charAt(0); // remove the first character at the first
 									// position
-			width = sc.nextInt();// Assigns next int to width
-			height = sc.nextInt();// Assigns next int to height
-		} 
-		else {
-			width = sc.nextInt();// assigns the next number to width
-			height = sc.nextInt();// assign next number to height
-		}
+		}						
+		width = sc.nextInt();// Assigns next int to width
+		height = sc.nextInt();// Assigns next int to height
+	
 		magicNum = width * height;// assign width * height to the magicNum
 		testArray = new int[magicNum][magicNum];// Declare a 2Dimension array
 		refArray = new int[magicNum][magicNum];// Declare a 2Dimension array

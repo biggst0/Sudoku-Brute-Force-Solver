@@ -98,22 +98,23 @@ public class SudokuBruteForceSolver
 			sequence[i] = 1;
 	}
 
-	// increments sequence[] from right to left.
+	// increments sequence[] from left to right..
 	// returns true as long as there is another possible sequence value.
-	public boolean incrementSequence() {
+	public boolean incrementSequence(){
 		int carry = 1;
-		int position = sequenceLength - 1;
-		while (carry != 0 && position >= 0) {
-			if (sequence[position] == magicNum) {
+		int position = 0;
+		while (carry != 0 && position <= sequenceLength - 1){
+			if (sequence[position] == magicNum){
 				sequence[position] = 1;
 				carry = 1;
-				position--;
-			} else {
+				position++;
+			}
+			else{
 				sequence[position]++;
 				carry = 0;
 			}
 		}
-		if (position < 0) {
+		if (position > sequenceLength - 1){
 			return false;
 		}
 		return true;

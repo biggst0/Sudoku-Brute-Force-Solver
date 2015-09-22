@@ -8,7 +8,13 @@ public class Driver
 	{
 		
 		SudokuBruteForceSolver SBFS = new SudokuBruteForceSolver();
+		Timer timer = new Timer();
+		
+		timer.start();
 		SBFS.solverControl();
+		timer.stop();
+		System.out.println(timer.getDuration());
 	
 	}
 }
+

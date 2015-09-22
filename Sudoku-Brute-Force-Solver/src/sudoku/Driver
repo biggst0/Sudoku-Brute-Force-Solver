@@ -13,7 +13,7 @@ public class Driver
 		timer.start();
 		SBFS.solverControl();
 		timer.stop();
-		System.out.println(timer.getDuration());
+		System.out.println(timer.getDuration() + " milliseconds");
 	
 	}
 }

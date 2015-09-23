@@ -1,20 +1,28 @@
 package sudoku;
 
+/**
+ * This class provides the initiation of the Sudoku Brute Force Solver.
+ * It takes in one argument which is the puzzle file being tested.
+ * The SudokuBruteForceSolver class is does all of the computation needed in solving .
+ * 
+ * @author Travis Biggs
+ * @author Larry Romano
+ * @author Debra Lufadeju.
+ */
+
 import java.io.FileNotFoundException;
 
 public class Driver 
 {
-	public static void main(String[] args) throws FileNotFoundException 
+	public static void main(String[] args) 
 	{
 		
 		SudokuBruteForceSolver SBFS = new SudokuBruteForceSolver();
 		Timer timer = new Timer();
 		
 		timer.start();
-		SBFS.solverControl();
+		SBFS.solverControl(args[0]);
 		timer.stop();
 		System.out.println(timer.getDuration() + " milliseconds");
-	
 	}
 }
-
